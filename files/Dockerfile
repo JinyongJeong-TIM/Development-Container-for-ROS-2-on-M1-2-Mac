@@ -133,6 +133,23 @@ USER root
 RUN chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}/*
 RUN chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}/.config
 
+# Install devleopment dependencies
+RUN apt update && \
+    apt install -y cmake build-essential vim nano git clang-format-15 tmux black shellcheck shfmt --fix-missing
+
+# Navigation2 dependencies
+RUN apt update && apt install -y --no-install-recommends \
+ros-humble-bondcpp ros-humble-behaviortree-cpp-v3 \
+ros-humble-diagnostic-updater graphicsmagick-libmagick-dev-compat \
+libxtensor-dev ros-humble-ompl ros-humble-test-msgs ros-humble-pcl*
+
+# GTSAM
+RUN apt update && apt install -y --no-install-recommends \
+libboost-all-dev libtbb-dev git
+RUN cd /tmp && git clone https://github.com/TIM-Robotics/gtsam.git && cd gtsam && mkdir build && cd build && \
+cmake -DCMAKE_BUILD_TYPE=Release -DGTSAM_USE_SYSTEM_EIGEN=ON .. && make install && rm -rf /tmp/gtsam
+RUN cp /usr/local/lib/libcephes-gtsam.so* /usr/lib/
+
 
 # Copy entrypoint file
 COPY docker-entrypoint.sh /usr/local/bin/
