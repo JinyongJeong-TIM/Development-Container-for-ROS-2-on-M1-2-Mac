@@ -150,6 +150,11 @@ RUN cd /tmp && git clone https://github.com/TIM-Robotics/gtsam.git && cd gtsam &
 cmake -DCMAKE_BUILD_TYPE=Release -DGTSAM_USE_SYSTEM_EIGEN=ON .. && make install && rm -rf /tmp/gtsam
 RUN cp /usr/local/lib/libcephes-gtsam.so* /usr/lib/
 
+# Ceres
+RUN apt update && apt install -y --no-install-recommends \
+cmake libgoogle-glog-dev libgflags-dev libatlas-base-dev libsuitesparse-dev 
+RUN cd /tmp && git clone https://ceres-solver.googlesource.com/ceres-solver && cd ceres-solver && rm -rf BUILD && mkdir build \
+cd build && cmake .. && make -j8 && make install && cd /tmp && rm -rf /tmp/ceres-solver
 
 # Copy entrypoint file
 COPY docker-entrypoint.sh /usr/local/bin/
