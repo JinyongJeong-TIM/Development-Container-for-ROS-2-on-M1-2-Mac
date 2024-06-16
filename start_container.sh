@@ -22,10 +22,12 @@ if [ "$(docker ps -al | grep development-container-for-ros-2-on-m1-2-mac_for_${U
 	echo "_/ Plese access the container by RDP Client!! _/"
 	echo "_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/"
 	exit
+else
+
+	nohup ./launch_container.sh xrdp > /tmp/nohup.out 2>&1 &
+
+	echo "_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/"
+	echo "_/ Plese access localhost by RDP Client!! _/"
+	echo "_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/"
+
 fi
-
-nohup ./launch_container.sh xrdp > /tmp/nohup.out 2>&1 &
-
-echo "_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/"
-echo "_/ Plese access localhost by RDP Client!! _/"
-echo "_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/"

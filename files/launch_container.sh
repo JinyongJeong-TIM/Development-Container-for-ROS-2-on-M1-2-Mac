@@ -54,8 +54,6 @@ fi
 if [ ! $# -ne 1 ]; then
 	if [ "commit" = $1 ]; then
 		docker commit development-container-for-ros-2-on-m1-2-mac_for_${USER}_container development-container-for-ros-2-on-m1-2-mac_for_${USER}:latest
-		CONTAINER_ID=$(docker ps -a -f name=development-container-for-ros-2-on-m1-2-mac_for_${USER}_container --format "{{.ID}}")
-		docker rm $CONTAINER_ID -f
 		exit 0
 	fi
 fi
@@ -69,6 +67,17 @@ if [ ! $# -ne 1 ]; then
 		exit 0
 	fi
 fi
+# Clear
+if [ ! $# -ne 1 ]; then
+	if [ "clear" = $1 ]; then
+		echo 'Now deleting docker container...'
+		CONTAINER_ID=$(docker ps -a -f name=development-container-for-ros-2-on-m1-2-mac_for_${USER}_container --format "{{.ID}}")
+		docker stop $CONTAINER_ID
+		docker rm $CONTAINER_ID -f
+		exit 0
+	fi
+fi
+
 
 # Delete
 if [ ! $# -ne 1 ]; then
@@ -104,14 +113,14 @@ DOCKER_OPT="${DOCKER_OPT} \
         --env=XAUTHORITY=${XAUTH} \
         --volume=${XAUTH}:${XAUTH} \
         --env=DISPLAY=${DISPLAY} \
-		--shm-size=4gb \
-		--env=TERM=xterm-256color \
+	--shm-size=4gb \
+	--env=TERM=xterm-256color \
         -w ${DOCKER_WORK_DIR} \
         -u ${USER} \
         --hostname Docker-`hostname` \
         --add-host Docker-`hostname`:127.0.1.1 \
-		-p 3389:3389 \
-		-e PASSWD=${USER}"
+	-p 3389:3389 \
+	-e PASSWD=${USER}"
 		
 		
 ## Allow X11 Connection
@@ -124,6 +133,7 @@ if [ ! "$CONTAINER_ID" ]; then
 			docker run ${DOCKER_OPT} \
 				--name=${DOCKER_NAME} \
 				--entrypoint docker-entrypoint.sh \
+			        --restart always \
 				development-container-for-ros-2-on-m1-2-mac_for_${USER}:latest
 		else
 			docker run ${DOCKER_OPT} \
@@ -131,6 +141,7 @@ if [ ! "$CONTAINER_ID" ]; then
 				--volume=$MAC_WORK_DIR/.Xauthority:$DOCKER_WORK_DIR/.Xauthority:rw \
 				-it \
 				--entrypoint /bin/bash \
+				--restart always \
 				development-container-for-ros-2-on-m1-2-mac_for_${USER}:latest
 		fi
 	else
@@ -139,6 +150,7 @@ if [ ! "$CONTAINER_ID" ]; then
 			--volume=$MAC_WORK_DIR/.Xauthority:$DOCKER_WORK_DIR/.Xauthority:rw \
 			-it \
 			--entrypoint /bin/bash \
+			--restart always \
 			development-container-for-ros-2-on-m1-2-mac_for_${USER}:latest
 	fi
 else
@@ -149,6 +161,7 @@ else
 				--name=${DOCKER_NAME} \
 				--volume=$MAC_WORK_DIR/.Xauthority:$DOCKER_WORK_DIR/.Xauthority:rw \
 				--entrypoint docker-entrypoint.sh \
+				--restart always \
 				development-container-for-ros-2-on-m1-2-mac_for_${USER}:latest
 		else
 			docker start $CONTAINER_ID
