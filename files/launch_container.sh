@@ -53,6 +53,7 @@ fi
 # Commit
 if [ ! $# -ne 1 ]; then
 	if [ "commit" = $1 ]; then
+		echo 'Commit changes to the image'
 		docker commit development-container-for-ros-2-on-m1-2-mac_for_${USER}_container development-container-for-ros-2-on-m1-2-mac_for_${USER}:latest
 		exit 0
 	fi
@@ -61,9 +62,9 @@ fi
 # Stop
 if [ ! $# -ne 1 ]; then
 	if [ "stop" = $1 ]; then
+		echo 'Stop container..'
 		CONTAINER_ID=$(docker ps -a -f name=development-container-for-ros-2-on-m1-2-mac_for_${USER}_container --format "{{.ID}}")
 		docker stop $CONTAINER_ID
-		docker rm $CONTAINER_ID -f
 		exit 0
 	fi
 fi
@@ -77,7 +78,6 @@ if [ ! $# -ne 1 ]; then
 		exit 0
 	fi
 fi
-
 
 # Delete
 if [ ! $# -ne 1 ]; then
